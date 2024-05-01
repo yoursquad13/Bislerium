@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "YnSF3Q0z7oAD6qLSQdxTQSmzKycAAyKdwMnP+f/CTLCuLkSlW1Kf+jHd3Dgtx9+fEnKlVlGJwqk6s6p01fDG3w==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\prash\\Desktop\\Projects\\BisleriumBlog\\Application\\Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\prash\\.nuget\\packages\\microsoft.aspnetcore.http.features\\5.0.17\\microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512",
+    "C:\\Users\\prash\\.nuget\\packages\\microsoft.extensions.primitives\\5.0.1\\microsoft.extensions.primitives.5.0.1.nupkg.sha512",
+    "C:\\Users\\prash\\.nuget\\packages\\system.io.pipelines\\5.0.2\\system.io.pipelines.5.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}
