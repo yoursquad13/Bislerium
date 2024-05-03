@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Account;
 using Application.DTOs.Base;
+using Application.DTOs.Dashboard;
 using Application.DTOs.User;
 using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -62,5 +63,22 @@ public class AdminController : Controller
                 TotalCount = 0
             });
         }
+    }
+
+    [HttpGet("dashboard-details")]
+    public IActionResult GetDashboardDetails()
+    {
+        var dashboardDetails = _adminService.GetDashboardDetails();
+
+        var result = new ResponseDto<DashboardDetailsDto>()
+        {
+            Message = "Success",
+            StatusCode = HttpStatusCode.OK,
+            TotalCount = 1,
+            Data = dashboardDetails,
+            Status = "Success"
+        };
+
+        return Ok(result);
     }
 }

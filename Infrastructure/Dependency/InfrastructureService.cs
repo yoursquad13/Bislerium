@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces.GenericRepo;
+using Application.Interfaces.Services;
 using Infrastructure.Implementations.GenericRepo;
+using Infrastructure.Implementations.Services;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,8 +21,8 @@ namespace Infrastructure.Dependency
 
             //services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddTransient<IGenericRepository, GenericRepository>();
-            //services.AddTransient<IFileUploadService, FileUploadService>();
-            //services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IFileUploadService, FileUploadService>();
+            services.AddTransient<IUserService, UserService>();
             //services.AddTransient<IEmailService, EmailService>();
 
             return services;

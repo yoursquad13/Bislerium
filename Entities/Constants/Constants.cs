@@ -10,8 +10,8 @@
 
         public class Passwords
         {
-            public const string AdminPassword = "radi0V!oleta";
-            public const string BloggerPassword = "radi0V!oleta";
+            public const string AdminPassword = "Password@123";
+            public const string BloggerPassword = "Password@123";
         }
 
         public class FilePath
