@@ -15,7 +15,7 @@ using System.Text;
 
 namespace BisleriumBlog.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/account")]
     [ApiController]
     public class AccountController : ControllerBase
     {

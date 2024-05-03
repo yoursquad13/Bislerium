@@ -3,6 +3,7 @@ using Application.Interfaces.Services;
 using Infrastructure.Implementations.GenericRepo;
 using Infrastructure.Implementations.Services;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Seed;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,11 +20,16 @@ namespace Infrastructure.Dependency
                 options.UseSqlServer(connectionString,
                     b => b.MigrationsAssembly("Infrastructure")));
 
-            //services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddScoped<IDbInitilizer, DbInitilizer>();
             services.AddTransient<IGenericRepository, GenericRepository>();
+            services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IAdminService, AdminService>();
+            services.AddTransient<IProfileService, ProfileService>();
+            services.AddTransient<IHomeServices, HomeServices>();
+            services.AddTransient<IBlogService, BlogService>();
             services.AddTransient<IFileUploadService, FileUploadService>();
             services.AddTransient<IUserService, UserService>();
-            //services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IEmailService, EmailService>();
 
             return services;
         }

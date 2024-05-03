@@ -16,12 +16,10 @@ namespace Infrastructure.Implementations.Services
     public class AccountService : IAccountService
     {
         private readonly IGenericRepository _genericRepository;
-        private readonly JWTSettings _jwtSettings;
 
-        public AccountService(IGenericRepository genericRepository, JWTSettings jwtSettings)
+        public AccountService(IGenericRepository genericRepository)
         {
             _genericRepository = genericRepository;
-            _jwtSettings = jwtSettings;
         }
 
         public User GetUserByEmail(string email)

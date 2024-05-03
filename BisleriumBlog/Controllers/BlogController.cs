@@ -9,7 +9,7 @@ namespace BisleriumBlog.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("api/admnin")]
+[Route("api/blog")]
 public class BlogController : Controller
 {
     private readonly IBlogService _blogService;
