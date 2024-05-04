@@ -8,6 +8,6 @@
 
         public string Audience { get; set; }
 
-        public double DurationInMinutes { get; set; }
+        public double DurationInMinutes { get; set; } = 20;
     }
 }

@@ -20,8 +20,8 @@ namespace Infrastructure.Dependency
                 options.UseSqlServer(connectionString,
                     b => b.MigrationsAssembly("Infrastructure")));
 
-            services.AddScoped<IDbInitilizer, DbInitilizer>();
             services.AddTransient<IGenericRepository, GenericRepository>();
+            services.AddScoped<IDbInitilizer, DbInitilizer>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IAdminService, AdminService>();
             services.AddTransient<IProfileService, ProfileService>();

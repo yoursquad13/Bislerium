@@ -10,9 +10,9 @@ namespace Infrastructure.Implementations.Services
     {
         public void SendEmail(EmailDto email)
         {
-            const string fromMail = "********@gmail.com";
+            const string fromMail = "bisleriumblog@gmail.com";
 
-            const string fromPassword = "**********";
+            const string fromPassword = "hkas exio sois xjay";
 
             var message = new MailMessage
             {
