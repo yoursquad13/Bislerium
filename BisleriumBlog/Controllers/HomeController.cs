@@ -97,6 +97,18 @@ namespace BisleriumBlog.Controllers
         {
             var blogDetails = _homeServices.GetBlogDetails(blogId);
 
+            if(blogDetails == null)
+            {
+                return NotFound(new ResponseDto<object>()
+                {
+                    Message = "Blog not found",
+                    Data = false,
+                    Status = "Not Found",
+                    StatusCode = HttpStatusCode.NotFound,
+                    TotalCount = 0
+                });
+            }
+
             var result = new ResponseDto<BlogPostDetailsDto>()
             {
                 Message = "Success",

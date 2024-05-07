@@ -1,5 +1,6 @@
 using Entities.Utility;
 using Infrastructure.Dependency;
+using Infrastructure.Persistence.Seed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -111,5 +112,12 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseHttpsRedirection();
+
+using(var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var dbInitilizer = services.GetRequiredService<IDbInitilizer>();
+    dbInitilizer.Initialize();
+}
 
 app.Run();

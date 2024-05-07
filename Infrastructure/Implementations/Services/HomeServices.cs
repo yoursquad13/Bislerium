@@ -188,6 +188,11 @@ namespace Infrastructure.Implementations.Services
 
             var blog = _genericRepository.GetById<Blog>(blogId);
 
+            if(blog == null)
+            {
+                return null;
+            }   
+
             var reactions = _genericRepository.Get<Reaction>(x => x.BlogId == blog.Id && x.IsReactedForBlog && x.IsActive);
 
             var comments = _genericRepository.Get<Comment>(x => x.BlogId == blog.Id && x.IsActive);

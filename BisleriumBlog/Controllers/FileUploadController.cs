@@ -27,7 +27,7 @@ namespace BisleriumBlog.Controllers
             {
                 return BadRequest(new ResponseDto<object>()
                 {
-                    Message = "Invalid File Path.",
+                    Message = "Invalid File Path. Use 1 for UserImages, Use 2 for BlogsImages",
                     StatusCode = HttpStatusCode.BadRequest,
                     TotalCount = 0,
                     Status = "Bad Request",
