@@ -15,6 +15,8 @@ namespace Entities.Models
 
         public int? CommentId { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+
         [ForeignKey("BlogId")]
         public virtual Blog? Blog { get; set; }
 

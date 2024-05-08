@@ -43,7 +43,7 @@ namespace Infrastructure.Implementations.Services
             return blogDetails;
         }
 
-        public List<BlogPostDetailsDto> GetHomePageBlogs()
+        public List<BlogPostDetailsNewDto> GetHomePageBlogs()
         {
             var userId = _userService.UserId;
 
@@ -53,10 +53,13 @@ namespace Infrastructure.Implementations.Services
 
             var blogDetails = blogs as Blog[] ?? blogs.ToArray();
 
-            var blogPostDetails = new List<BlogPostDetailsDto>();
+            var blogPostDetails = new List<BlogPostDetailsNewDto>();
 
             foreach (var blog in blogDetails)
             {
+
+                var userDetail = _genericRepository.GetById<User>(blog.CreatedBy);
+
                 var reactions = _genericRepository.Get<Reaction>(x => x.BlogId == blog.Id && x.IsReactedForBlog && x.IsActive);
 
                 var comments = _genericRepository.Get<Comment>(x => x.BlogId == blog.Id && x.IsActive);
@@ -78,15 +81,18 @@ namespace Infrastructure.Implementations.Services
                                  downVotes.Count() * 1 +
                                  commentDetails.Count() + commentForComments.Count();
 
-                blogPostDetails.Add(new BlogPostDetailsDto()
+                blogPostDetails.Add(new BlogPostDetailsNewDto()
                 {
+                    Author = userDetail.FullName,
+                                    AuthorId = userDetail.Id,
+                    AuthorImage = userDetail.ImageURL,
                     BlogId = blog.Id,
                     Title = blog.Title,
                     Body = blog.Body,
                     UpVotes = reactionDetails.Count(x => x.ReactionId == 1),
                     DownVotes = reactionDetails.Count(x => x.ReactionId == 2),
-                    IsUpVotedByUser = reactionDetails.Any(x => x.ReactionId == 1 && x.CreatedBy == user.Id),
-                    IsDownVotedByUser = reactionDetails.Any(x => x.ReactionId == 2 && x.CreatedBy == user.Id),
+                    IsUpVotedByUser = user != null && reactionDetails.Any(x => x.ReactionId == 1 && x.CreatedBy == user.Id),
+                    IsDownVotedByUser = user != null && reactionDetails.Any(x => x.ReactionId == 2 && x.CreatedBy == user.Id),
                     IsEdited = blog.LastModifiedAt != null,
                     CreatedAt = blog.CreatedAt,
                     PopularityPoints = popularity,
@@ -180,7 +186,7 @@ namespace Infrastructure.Implementations.Services
 
         }
 
-        public BlogPostDetailsDto GetBlogDetails(int blogId)
+        public BlogPostDetailsNewDto GetBlogDetails(int blogId)
         {
             var userId = _userService.UserId;
 
@@ -188,7 +194,9 @@ namespace Infrastructure.Implementations.Services
 
             var blog = _genericRepository.GetById<Blog>(blogId);
 
-            if(blog == null)
+            var userDetail = _genericRepository.GetById<User>(blog.CreatedBy);
+
+            if (blog == null)
             {
                 return null;
             }   
@@ -214,15 +222,18 @@ namespace Infrastructure.Implementations.Services
                              downVotes.Count() * 1 +
                              commentDetails.Count() + commentForComments.Count();
 
-            var blogDetails = new BlogPostDetailsDto()
+            var blogDetails = new BlogPostDetailsNewDto()
             {
+                Author = userDetail.FullName,
+                AuthorId = userDetail.Id,
+                AuthorImage = userDetail.ImageURL,
                 BlogId = blog.Id,
                 Title = blog.Title,
                 Body = blog.Body,
                 UpVotes = reactionDetails.Count(x => x.ReactionId == 1),
                 DownVotes = reactionDetails.Count(x => x.ReactionId == 2),
-                IsUpVotedByUser = reactionDetails.Any(x => x.ReactionId == 1 && x.CreatedBy == user.Id),
-                IsDownVotedByUser = reactionDetails.Any(x => x.ReactionId == 2 && x.CreatedBy == user.Id),
+                IsUpVotedByUser = user != null && reactionDetails.Any(x => x.ReactionId == 1 && x.CreatedBy == user.Id),
+                IsDownVotedByUser = user != null && reactionDetails.Any(x => x.ReactionId == 2 && x.CreatedBy == user.Id),
                 IsEdited = blog.LastModifiedAt != null,
                 CreatedAt = blog.CreatedAt,
                 PopularityPoints = popularity,
@@ -280,7 +291,7 @@ namespace Infrastructure.Implementations.Services
 
             var existingReaction =
                 _genericRepository.Get<Reaction>(x => x.CreatedBy == user.Id &&
-                                                      x.ReactionId == 3 && x.IsReactedForComment);
+                                                      x.ReactionId != 3 && x.IsReactedForComment);
 
             var existingReactionDetails = existingReaction as Reaction[] ?? existingReaction.ToArray();
 
@@ -411,17 +422,18 @@ namespace Infrastructure.Implementations.Services
                         .Select(x => new PostComments()
                         {
                             Comment = x.Text,
-                            UpVotes = _genericRepository.Get<Reaction>(z => z.BlogId == blogId && z.IsReactedForComment).Count(z => z.ReactionId == 1 && z.CommentId == x.Id),
-                            DownVotes = _genericRepository.Get<Reaction>(z => z.BlogId == blogId && z.IsReactedForComment).Count(z => z.ReactionId == 2 && z.CommentId == x.Id),
-                            IsUpVotedByUser = _genericRepository.Get<Reaction>(z => z.BlogId == blogId && z.IsReactedForComment).Any(z => z.ReactionId == 1 && z.CreatedBy == user.Id && z.CommentId == x.Id),
-                            IsDownVotedByUser = _genericRepository.Get<Reaction>(z => z.BlogId == blogId && z.IsReactedForComment).Any(z => z.ReactionId == 2 && z.CreatedBy == user.Id && z.CommentId == x.Id),
+                            CreatedAt = x.CreatedAt,
+                            UpVotes = _genericRepository.Get<Reaction>(z => z.CommentId == x.Id && z.IsReactedForComment).Count(z => z.ReactionId == 1 && z.CommentId == x.Id),
+                            DownVotes = _genericRepository.Get<Reaction>(z => z.CommentId == x.Id && z.IsReactedForComment).Count(z => z.ReactionId == 2 && z.CommentId == x.Id),
+                            IsUpVotedByUser = _genericRepository.Get<Reaction>(z => z.CommentId == x.Id && z.IsReactedForComment).Any(z => z.ReactionId == 1 && z.CreatedBy == user.Id && z.CommentId == x.Id),
+                            IsDownVotedByUser = _genericRepository.Get<Reaction>(z => z.CommentId == x.Id && z.IsReactedForComment).Any(z => z.ReactionId == 2 && z.CreatedBy == user.Id && z.CommentId == x.Id),
                             CommentId = x.Id,
                             CommentedBy = _genericRepository.GetById<User>(x.CreatedBy).FullName,
                             ImageUrl = _genericRepository.GetById<User>(x.CreatedBy).ImageURL ?? "sample-profile.png",
                             IsUpdated = x.LastModifiedAt != null,
                             CommentedTimePeriod = DateTime.Now.Hour - x.CreatedAt.Hour < 24 ? $"{(int)(DateTime.Now - x.CreatedAt).TotalHours} hours ago" : x.CreatedAt.ToString("dd-MM-yyyy HH:mm"),
                             Comments = GetCommentsRecursive(blogId, true, false, x.Id)
-                        }).ToList();
+                        }).OrderByDescending(x => x.CreatedAt).ToList();
 
             return comments;
         }

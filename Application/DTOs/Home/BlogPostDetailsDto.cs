@@ -5,6 +5,35 @@ namespace Application.DTOs.Home
     {
         public int BlogId { get; set; }
 
+
+
+        public string Title { get; set; }
+
+        public string Body { get; set; }
+
+        public string UploadedTimePeriod { get; set; }
+
+        public bool IsEdited { get; set; }
+
+        public int PopularityPoints { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public List<string> Images { get; set; }
+
+        public List<PostComments> Comments { get; set; }
+    }
+
+    public class BlogPostDetailsNewDto : UserActions
+    {
+        public int BlogId { get; set; }
+
+        public string Author { get; set; }
+
+        public int AuthorId { get; set; }
+
+        public string AuthorImage { get; set; }
+
         public string Title { get; set; }
 
         public string Body { get; set; }
@@ -35,6 +64,8 @@ namespace Application.DTOs.Home
         public string Comment { get; set; }
 
         public bool IsUpdated { get; set; }
+
+        public DateTime CreatedAt { get; set; }
 
         public List<PostComments> Comments { get; set; }
     }

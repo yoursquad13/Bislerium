@@ -6,7 +6,7 @@ namespace Application.Interfaces.Services
 {
     public interface IHomeServices
     {
-        List<BlogPostDetailsDto> GetHomePageBlogs();
+        List<BlogPostDetailsNewDto> GetHomePageBlogs();
 
         Blog[] GetActiveBlogs();
 
@@ -14,7 +14,7 @@ namespace Application.Interfaces.Services
 
         List<BlogPostDetailsDto> GetBloggersBlogs();
 
-        BlogPostDetailsDto GetBlogDetails(int blogId);
+        BlogPostDetailsNewDto GetBlogDetails(int blogId);
 
         bool UpVoteDownVoteBlog(int blogId, int reactionId);
 

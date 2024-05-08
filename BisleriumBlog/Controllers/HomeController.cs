@@ -9,7 +9,6 @@ using System.Net;
 
 namespace BisleriumBlog.Controllers
 {
-    [Authorize]
     [Route("api/home")]
     [ApiController]
     public class HomeController : ControllerBase
@@ -44,7 +43,7 @@ namespace BisleriumBlog.Controllers
                     break;
             }
 
-            var result = new ResponseDto<List<BlogPostDetailsDto>>()
+            var result = new ResponseDto<List<BlogPostDetailsNewDto>>()
             {
                 Message = "Success",
                 Data = blogPostDetails.Skip(pageNumber - 1).Take(pageSize).ToList(),
@@ -109,7 +108,7 @@ namespace BisleriumBlog.Controllers
                 });
             }
 
-            var result = new ResponseDto<BlogPostDetailsDto>()
+            var result = new ResponseDto<BlogPostDetailsNewDto>()
             {
                 Message = "Success",
                 Data = blogDetails,

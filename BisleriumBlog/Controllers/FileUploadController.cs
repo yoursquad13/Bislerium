@@ -8,7 +8,6 @@ using System.Net;
 
 namespace BisleriumBlog.Controllers
 {
-    [Authorize]
     [Route("api/file-upload")]
     [ApiController]
     public class FileUploadController : ControllerBase
