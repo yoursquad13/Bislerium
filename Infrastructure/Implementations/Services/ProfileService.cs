@@ -56,6 +56,10 @@ namespace Infrastructure.Implementations.Services
 
             user.MobileNo = profileDetails.MobileNumber;
 
+            user.ImageURL = profileDetails.ImageURL;
+
+            user.UserName = profileDetails.Username;
+
             _genericRepository.Update(user);
 
             return true;

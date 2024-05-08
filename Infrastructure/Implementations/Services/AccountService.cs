@@ -29,9 +29,6 @@ namespace Infrastructure.Implementations.Services
 
             var user = _genericRepository.GetFirstOrDefault<User>(x => x.EmailAddress == email);
 
-            if (user == null)
-                throw new Exception("User not found");
-
             return user;
 
         }
