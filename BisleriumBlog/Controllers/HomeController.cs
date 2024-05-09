@@ -224,5 +224,33 @@ namespace BisleriumBlog.Controllers
                 Data = result //true or false
             });
         }
+
+        [HttpPatch("edit-comment/{commentId:int}")]
+        public IActionResult EditComment(int commentId, string commentText)
+        {
+            var result = _homeServices.EditComment(commentId, commentText);
+
+            if(!result)
+            {
+                return NotFound(new ResponseDto<object>()
+                {
+                    Message = "Comment not found",
+                    Data = false,
+                    Status = "Not Found",
+                    StatusCode = HttpStatusCode.NotFound,
+                    TotalCount = 0
+                });
+            }
+
+            return Ok(new ResponseDto<object>()
+            {
+                Message = "Success",
+                StatusCode = HttpStatusCode.OK,
+                TotalCount = 0,
+                Status = "Success",
+                Data = result //true or false
+            });
+        }
+
     }
 }

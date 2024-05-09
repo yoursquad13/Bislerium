@@ -26,6 +26,8 @@ namespace Application.Interfaces.Services
 
         bool DeleteComment(int commentId);
 
+        bool EditComment(int commentId, string commentText);
+
         bool RemoveBlogVote(int blogId);
 
         bool RemoveCommentVote(int commentId);

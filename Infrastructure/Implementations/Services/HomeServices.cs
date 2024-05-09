@@ -437,5 +437,23 @@ namespace Infrastructure.Implementations.Services
 
             return comments;
         }
+
+        public bool EditComment(int commentId, string commentText)
+        {
+            var comment = _genericRepository.GetById<Comment>(commentId);
+
+            if(comment == null)
+            {
+                return false;
+            }
+
+            comment.Text = commentText;
+    
+            comment.LastModifiedAt = DateTime.Now;
+    
+            _genericRepository.Update(comment);
+    
+            return true;
+        }
     }
 }
