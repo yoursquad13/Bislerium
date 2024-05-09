@@ -10,7 +10,6 @@ using System.Net;
 
 namespace BisleriumBlog.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProfileController : ControllerBase
@@ -22,6 +21,7 @@ namespace BisleriumBlog.Controllers
             _profileService = profileService;
         }
 
+        [Authorize]
         [HttpGet("profile-details")]
         public IActionResult GetProfileDetails()
         {
@@ -37,6 +37,7 @@ namespace BisleriumBlog.Controllers
             });
         }
 
+        [Authorize]
         [HttpPatch("update-profile-details")]
         public IActionResult UpdateProfileDetails(ProfileDetailsDto profileDetails)
         {
@@ -52,6 +53,7 @@ namespace BisleriumBlog.Controllers
             });
         }
 
+        [Authorize]
         [HttpDelete("delete-profile")]
         public IActionResult DeleteProfile()
         {
@@ -67,6 +69,7 @@ namespace BisleriumBlog.Controllers
             });
         }
 
+        [Authorize]
         [HttpPost("change-password")]
         public IActionResult ChangePassword(ChangePasswordDto changePassword)
         {
@@ -95,6 +98,7 @@ namespace BisleriumBlog.Controllers
                 });
             }
         }
+
 
         [HttpPost("reset-password")]
         public IActionResult ResetPassword(string emailAddress)
