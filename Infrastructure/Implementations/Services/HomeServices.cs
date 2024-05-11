@@ -6,6 +6,7 @@ using Application.Interfaces.Services;
 using Entities.Models;
 using Entities.Utility;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.Design;
 using System.Net;
 
 
@@ -42,6 +43,20 @@ namespace Infrastructure.Implementations.Services
             var blogDetails = blogs as Blog[] ?? blogs.ToArray();
 
             return blogDetails;
+        }
+
+        public int GetUserIdByBlogId(int blogId)
+        {
+            var blog = _genericRepository.GetById<Blog>(blogId);
+
+            return blog.CreatedBy;
+        }
+
+        public int GetUserIdByCommentId(int commentId)
+        {
+            var comment = _genericRepository.GetById<Comment>(commentId);
+
+            return comment.CreatedBy;
         }
 
         public List<BlogPostDetailsNewDto> GetHomePageBlogs()
@@ -508,6 +523,119 @@ namespace Infrastructure.Implementations.Services
             }).ToList();
 
             return blogLogDetails;
+        }
+
+        public bool AddNotification(int blogId,int reactionId)
+        {
+            var userId = _userService.UserId;
+
+            var user = _genericRepository.GetById<User>(userId);
+
+            var blog = _genericRepository.GetById<Blog>(blogId);
+
+            var msg = reactionId == 1 ? "Upvoted" : "Downvoted";
+
+            var notification = new Notification()
+            {
+                SenderId = user.Id,
+                ReceiverId = GetUserIdByBlogId(blogId),
+                Title = "New Notification",
+                Content = $"User {user.FullName} has {msg} to your blog {blog.Title}",
+                IsSeen = false,
+                BlogId = blog.Id,
+                CreatedAt = DateTime.Now,
+                CreatedBy = user.Id,
+                IsActive = true
+            };
+
+            _genericRepository.Insert(notification);
+            return true;
+        }
+
+        public bool AddCommentNotification(int commentId, int reactionId)
+        {
+            var userId = _userService.UserId;
+
+            var user = _genericRepository.GetById<User>(userId);
+
+            var comment = _genericRepository.GetById<Comment>(commentId);
+
+            var msg = reactionId == 1 ? "Upvoted" : "Downvoted";
+
+            var notification = new Notification()
+            {
+                SenderId = user.Id,
+                ReceiverId = comment.CreatedBy,
+                Title = "New Notification",
+                Content = $"User {user.FullName} has {msg} to your {comment.Text}",
+                IsSeen = false,
+                CreatedAt = DateTime.Now,
+                CreatedBy = user.Id,
+                IsActive = true
+            };
+
+            _genericRepository.Insert(notification);
+            return true;
+        }
+
+        public bool AddNewCommentNotification(int blogId)
+        {
+            var userId = _userService.UserId;
+
+            var user = _genericRepository.GetById<User>(userId);
+
+            var blog = _genericRepository.GetById<Blog>(blogId);
+
+            var notification = new Notification()
+            {
+                SenderId = user.Id,
+                ReceiverId = GetUserIdByBlogId(blogId),
+                Title = "New Notification",
+                Content = $"User {user.FullName} has commented on your blog {blog.Title}",
+                IsSeen = false,
+                BlogId = blog.Id,
+                CreatedAt = DateTime.Now,
+                CreatedBy = user.Id,
+                IsActive = true
+            };
+
+            _genericRepository.Insert(notification);
+            return true;
+        }
+
+        public bool AddNewCommentsCommentNotification(int commentId)
+        {
+            var userId = _userService.UserId;
+
+            var user = _genericRepository.GetById<User>(userId);
+
+            var comment = _genericRepository.GetById<Comment>(commentId);
+
+            var notification = new Notification()
+            {
+                SenderId = user.Id,
+                ReceiverId = comment.CreatedBy,
+                Title = "New Notification",
+                Content = $"User {user.FullName} has commented on your comment",
+                IsSeen = false,
+                CreatedAt = DateTime.Now,
+                CreatedBy = user.Id,
+                IsActive = true
+            };
+
+            _genericRepository.Insert(notification);
+            return true;
+        }
+
+        public bool MarkAsRead(int notificationId)
+        {
+            var notification = _genericRepository.GetById<Notification>(notificationId);
+
+            notification.IsSeen = true;
+
+            _genericRepository.Update(notification);
+
+            return true;
         }
     }
 }

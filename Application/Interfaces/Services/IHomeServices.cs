@@ -2,6 +2,7 @@
 using Application.DTOs.Blog;
 using Application.DTOs.Home;
 using Entities.Models;
+using System.ComponentModel.Design;
 
 namespace Application.Interfaces.Services
 {
@@ -12,6 +13,20 @@ namespace Application.Interfaces.Services
         Blog[] GetActiveBlogs();
 
         Blog[] GetActiveBlogsByUserId();
+
+        int GetUserIdByBlogId(int blogId);
+
+        int GetUserIdByCommentId(int commentId);
+
+        bool AddNotification(int blogId, int reactionId);
+
+        bool AddCommentNotification(int commentId, int reactionId);
+
+        bool AddNewCommentNotification(int blogId);
+
+        bool AddNewCommentsCommentNotification(int commentId);
+
+        bool MarkAsRead(int notificationId);
 
         List<BlogPostDetailsDto> GetBloggersBlogs();
 

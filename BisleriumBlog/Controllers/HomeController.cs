@@ -2,12 +2,14 @@
 using Application.DTOs.Blog;
 using Application.DTOs.Home;
 using Application.Interfaces.Services;
+using Entities.Models;
 using Entities.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 using System.Net;
 
 namespace BisleriumBlog.Controllers
@@ -57,7 +59,6 @@ namespace BisleriumBlog.Controllers
                 TotalCount = blogDetails.Count()
             };
 
-            _hubContext.Clients.All.SendAsync("ReceiveNotification", result);
 
             return Ok(result);
         }
@@ -132,6 +133,20 @@ namespace BisleriumBlog.Controllers
         {
             var result = _homeServices.UpVoteDownVoteBlog(blogId, reactionId);
 
+            if(result)
+            {
+                var msg = reactionId == 1 ? "Your blog has been upvoted" : "Your blog has been downvoted";
+
+                var Notification = new Notification()
+                {
+                    ToUserId = _homeServices.GetUserIdByBlogId(blogId),
+                    Content = msg
+                };
+                _homeServices.AddNotification(blogId, reactionId);
+
+                _hubContext.Clients.All.SendAsync("ReceiveNotification", Notification);
+            }
+
             return Ok(new ResponseDto<object>()
             {
                 Message = "Success",
@@ -146,6 +161,20 @@ namespace BisleriumBlog.Controllers
         public IActionResult UpVoteDownVoteComment(int commentId, int reactionId)
         {
             var result = _homeServices.UpVoteDownVoteComment(commentId, reactionId);
+
+            if (result)
+            {
+                var msg = reactionId == 1 ? "Your comment has been upvoted" : "Your comment has been downvoted";
+
+                var Notification = new Notification()
+                {
+                    ToUserId = _homeServices.GetUserIdByCommentId(commentId),
+                    Content = msg
+                };
+                _homeServices.AddCommentNotification(commentId, reactionId);
+
+                _hubContext.Clients.All.SendAsync("ReceiveNotification", Notification);
+            }
 
             return Ok(new ResponseDto<object>()
             {
@@ -162,6 +191,18 @@ namespace BisleriumBlog.Controllers
         {
             var result = _homeServices.CommentForBlog(blogId, commentText);
 
+            if (result)
+            {
+                var Notification = new Notification()
+                {
+                    ToUserId = _homeServices.GetUserIdByBlogId(blogId),
+                    Content = "New Comment on your blog"
+                };
+                _homeServices.AddNewCommentNotification(blogId);
+
+                _hubContext.Clients.All.SendAsync("ReceiveNotification", Notification);
+            }
+
             return Ok(new ResponseDto<object>()
             {
                 Message = "Success",
@@ -176,6 +217,18 @@ namespace BisleriumBlog.Controllers
         public IActionResult CommentForComment(int commentId, string commentText)
         {
             var result = _homeServices.CommentForComment(commentId, commentText);
+
+            if (result)
+            {
+                var Notification = new Notification()
+                {
+                    ToUserId = _homeServices.GetUserIdByCommentId(commentId),
+                    Content = "New Comment on your comment"
+                };
+                _homeServices.AddNewCommentsCommentNotification(commentId);
+
+                _hubContext.Clients.All.SendAsync("ReceiveNotification", Notification);
+            }
 
             return Ok(new ResponseDto<object>()
             {
@@ -315,6 +368,33 @@ namespace BisleriumBlog.Controllers
             };
 
             return Ok(result);
+        }
+
+        [HttpPatch("mark-as-read/{notificationId:int}")]
+        public IActionResult MarkAsRead(int notificationId)
+        {
+            var result = _homeServices.MarkAsRead(notificationId);
+
+            if(!result)
+            {
+                return NotFound(new ResponseDto<object>()
+                {
+                    Message = "Notification not found",
+                    Data = false,
+                    Status = "Not Found",
+                    StatusCode = HttpStatusCode.NotFound,
+                    TotalCount = 0
+                });
+            }
+
+            return Ok(new ResponseDto<object>()
+            {
+                Message = "Success",
+                StatusCode = HttpStatusCode.OK,
+                TotalCount = 0,
+                Status = "Success",
+                Data = result //true or false
+            });
         }
 
     }
