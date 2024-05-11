@@ -1,7 +1,9 @@
+using BisleriumBlog;
 using Entities.Utility;
 using Infrastructure.Dependency;
 using Infrastructure.Persistence.Seed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -85,7 +87,20 @@ builder.Services.AddInfrastructureService(configuration);
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
+
+//app.MapPost("notifications/user", async (
+//    string userId,
+//    string content,
+//    IHubContext<NotificationsHub, INotificationsClient> context) =>
+//{
+//    await context.Clients.User(userId).ReceiveNotification(content);
+
+//    return Results.NoContent();
+//});
+app.MapHub<NotificationsHub>("notifications-hub");
 
 app.UseSwagger();
 
@@ -113,7 +128,7 @@ app.MapControllers();
 
 app.UseHttpsRedirection();
 
-using(var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var dbInitilizer = services.GetRequiredService<IDbInitilizer>();
