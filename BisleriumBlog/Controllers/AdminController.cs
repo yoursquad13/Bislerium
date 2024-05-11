@@ -66,9 +66,9 @@ public class AdminController : Controller
     }
 
     [HttpGet("dashboard-details")]
-    public IActionResult GetDashboardDetails()
+    public IActionResult GetDashboardDetails(bool allTime,int? specificMonth)
     {
-        var dashboardDetails = _adminService.GetDashboardDetails();
+        var dashboardDetails = _adminService.GetDashboardDetails(allTime,specificMonth);
 
         var result = new ResponseDto<DashboardDetailsDto>()
         {

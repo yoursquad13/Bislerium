@@ -65,15 +65,22 @@ namespace Infrastructure.Implementations.Services
             }
         }
 
-        public DashboardDetailsDto GetDashboardDetails()
+        public DashboardDetailsDto GetDashboardDetails(bool allTime = true, int? specificMonth = null)
         {
-            var blogs = _genericRepository.Get<Blog>(x => x.IsActive);
+            IEnumerable<Blog> blogsQuery = _genericRepository.Get<Blog>(x => x.IsActive);
+
+            if (!allTime && specificMonth.HasValue)
+            {
+                blogsQuery = blogsQuery.Where(x => x.CreatedAt.Month == specificMonth.Value);
+            }
+
+            var blogs = blogsQuery.ToList();
 
             var reactions = _genericRepository.Get<Reaction>(x => x.IsActive);
 
             var comments = _genericRepository.Get<Comment>(x => x.IsActive);
 
-            var blogDetails = blogs as Blog[] ?? blogs.ToArray();
+            var blogDetails = blogs.ToArray();
 
             var reactionDetails = reactions as Reaction[] ?? reactions.ToArray();
 

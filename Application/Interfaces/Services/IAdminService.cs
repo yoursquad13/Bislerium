@@ -10,6 +10,6 @@ namespace Application.Interfaces.Services
 
         bool RegisterAdmin(RegisterDto register);
 
-        DashboardDetailsDto GetDashboardDetails();
+        DashboardDetailsDto GetDashboardDetails(bool allTime = true, int? specificMonth = null);
     }
 }
