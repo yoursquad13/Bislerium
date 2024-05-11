@@ -3,6 +3,7 @@ using Entities.Utility;
 using Infrastructure.Dependency;
 using Infrastructure.Persistence.Seed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -100,7 +101,6 @@ var app = builder.Build();
 
 //    return Results.NoContent();
 //});
-app.MapHub<NotificationsHub>("notifications-hub");
 
 app.UseSwagger();
 
@@ -117,8 +117,10 @@ app.UseCors(policyBuilder =>
 {
     policyBuilder.AllowAnyOrigin()
         .AllowAnyMethod()
-        .AllowAnyHeader();
+        .AllowAnyHeader().SetIsOriginAllowed((host) => true);
 });
+
+app.MapHub<NotificationsHub>("notifications-hub");
 
 app.UseAuthentication();
 

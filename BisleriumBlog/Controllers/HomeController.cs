@@ -6,6 +6,8 @@ using Entities.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace BisleriumBlog.Controllers
@@ -15,10 +17,12 @@ namespace BisleriumBlog.Controllers
     public class HomeController : ControllerBase
     {
         private readonly IHomeServices _homeServices;
+        private readonly IHubContext<NotificationsHub> _hubContext;
 
-        public HomeController(IHomeServices homeServices)
+        public HomeController(IHomeServices homeServices, IHubContext<NotificationsHub> hubContext)
         {
             _homeServices = homeServices;
+            _hubContext = hubContext;
         }
 
         [HttpGet("home-page-blogs")]
@@ -52,6 +56,8 @@ namespace BisleriumBlog.Controllers
                 StatusCode = HttpStatusCode.OK,
                 TotalCount = blogDetails.Count()
             };
+
+            _hubContext.Clients.All.SendAsync("ReceiveNotification", result);
 
             return Ok(result);
         }

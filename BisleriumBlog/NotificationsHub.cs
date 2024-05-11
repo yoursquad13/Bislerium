@@ -5,10 +5,9 @@ namespace BisleriumBlog
 {
     public sealed class NotificationsHub : Hub
     {
-        public async Task SendNotification(Notification noti)
+        public async Task SendNotification(string content)
         {
-            var users = new string[] { noti.ToUserId, noti.FromUserId };
-            await Clients.Users(users).SendAsync("ReceiveNotification", noti);
+            await Clients.All.SendAsync("ReceiveNotification", content);
         }
     }
 }
