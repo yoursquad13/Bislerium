@@ -1,4 +1,5 @@
 ﻿
+using Application.DTOs.Blog;
 using Application.DTOs.Home;
 using Entities.Models;
 
@@ -16,6 +17,8 @@ namespace Application.Interfaces.Services
 
         BlogPostDetailsNewDto GetBlogDetails(int blogId);
 
+        List<BlogLogDto> GetBlogLog(int blogId);
+
         bool UpVoteDownVoteBlog(int blogId, int reactionId);
 
         bool UpVoteDownVoteComment(int commentId, int reactionId);
@@ -31,5 +34,7 @@ namespace Application.Interfaces.Services
         bool RemoveBlogVote(int blogId);
 
         bool RemoveCommentVote(int commentId);
+
+        List<CommentLogDto> GetCommentLog(int commentId);
     }
 }

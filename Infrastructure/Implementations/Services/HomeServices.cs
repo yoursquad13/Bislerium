@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Base;
+using Application.DTOs.Blog;
 using Application.DTOs.Home;
 using Application.Interfaces.GenericRepo;
 using Application.Interfaces.Services;
@@ -442,10 +443,21 @@ namespace Infrastructure.Implementations.Services
         {
             var comment = _genericRepository.GetById<Comment>(commentId);
 
-            if(comment == null)
+            if (comment == null)
             {
                 return false;
             }
+
+            var commentLog = new CommentLog()
+            {
+                CommentId = comment.Id,
+                Text = comment.Text,
+                CreatedAt = comment.CreatedAt,
+                CreatedBy = comment.CreatedBy,
+                IsActive = false
+            };
+
+            _genericRepository.Insert(commentLog);
 
             comment.Text = commentText;
     
@@ -454,6 +466,48 @@ namespace Infrastructure.Implementations.Services
             _genericRepository.Update(comment);
     
             return true;
+        }
+
+        public List<CommentLogDto> GetCommentLog(int commentId)
+        {
+            var commentLog = _genericRepository.Get<CommentLog>(x => x.CommentId == commentId);
+
+            if (commentLog == null)
+            {
+                return null;
+            }
+
+            var commentLogDetails = commentLog.Select(x => new CommentLogDto()
+            {
+                CommentId = x.CommentId,
+                Text = x.Text,
+                CreatedBy = _genericRepository.GetById<User>(x.CreatedBy).FullName,
+                CommentedAt = x.CreatedAt
+            }).ToList();
+
+            return commentLogDetails;
+            
+        }
+
+        public List<BlogLogDto> GetBlogLog(int blogId)
+        {
+            var blogLog = _genericRepository.Get<BlogLog>(x => x.BlogId == blogId);
+
+            if (blogLog == null)
+            {
+                return null;
+            }
+
+            var blogLogDetails = blogLog.Select(x => new BlogLogDto()
+            {
+                BlogId = x.BlogId,
+                Title = x.Title,
+                Body = x.Body,
+                CreatedBy = _genericRepository.GetById<User>(x.CreatedBy).FullName,
+                CreatedAt = x.CreatedAt
+            }).ToList();
+
+            return blogLogDetails;
         }
     }
 }

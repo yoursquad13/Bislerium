@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Base;
+using Application.DTOs.Blog;
 using Application.DTOs.Home;
 using Application.Interfaces.Services;
 using Entities.Utility;
@@ -250,6 +251,64 @@ namespace BisleriumBlog.Controllers
                 Status = "Success",
                 Data = result //true or false
             });
+        }
+
+        [HttpGet("get-commentlogs/{commentId:int}")]
+        public IActionResult GetCommentLog(int commentId)
+        {
+            var commentLog = _homeServices.GetCommentLog(commentId);
+
+            if(commentLog == null)
+            {
+                return NotFound(new ResponseDto<object>()
+                {
+                    Message = "Comment log not found",
+                    Data = false,
+                    Status = "Not Found",
+                    StatusCode = HttpStatusCode.NotFound,
+                    TotalCount = 0
+                });
+            }
+
+            var result = new ResponseDto<List<CommentLogDto>>()
+            {
+                Message = "Success",
+                Data = commentLog,
+                Status = "Success",
+                StatusCode = HttpStatusCode.OK,
+                TotalCount = commentLog.Count()
+            };
+
+            return Ok(result);
+        }
+
+        [HttpGet("get-bloglogs/{blogId:int}")]
+        public IActionResult GetBlogLog(int blogId)
+        {
+            var blogLog = _homeServices.GetBlogLog(blogId);
+
+            if(blogLog == null)
+            {
+                return NotFound(new ResponseDto<object>()
+                {
+                    Message = "Blog log not found",
+                    Data = false,
+                    Status = "Not Found",
+                    StatusCode = HttpStatusCode.NotFound,
+                    TotalCount = 0
+                });
+            }
+
+            var result = new ResponseDto<List<BlogLogDto>>()
+            {
+                Message = "Success",
+                Data = blogLog,
+                Status = "Success",
+                StatusCode = HttpStatusCode.OK,
+                TotalCount = blogLog.Count()
+            };
+
+            return Ok(result);
         }
 
     }
